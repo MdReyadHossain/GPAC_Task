@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Answer";
+}
+
+<div class="container">
+    <h2>Meeting Minutes</h2>
+
+    <form id="meetingMinutesForm">
+        <div class="form-group card d-flex flex-row px-2 py-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="customerType" id="corporate" value="Corporate" checked>
+                <label class="form-check-label" for="corporate">Corporate</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="customerType" id="individual" value="Individual">
+                <label class="form-check-label" for="individual">Individual</label>
+            </div>
+        </div>
+
+        <div class="mb-2 card pe-5 py-5 d-flex flex-row">
+            <div class="w-50 mx-5">
+                <div class="form-group">
+                    <label for="customerName">Customer Name<span class="text-danger">*</span></label>
+                    <select class="form-control" id="customerName" name="CustomerId">
+                        <option disabled selected>Select Customer</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2 justify-content-between">
+                    <div class="form-group vw-100">
+                        <label for="meetingDate">Date</label>
+                        <input type="date" class="form-control" id="meetingDate" name="MeetingDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="meetingTime">Time</label>
+                        <input type="time" class="form-control" id="meetingTime" name="MeetingTime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Meeting Place<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="customerName" name="CustomerId" placeholder="meeting place">
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Attends From Client Side<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Present client side"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Attends From Host Side<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Present self side"></textarea>
+                </div>
+            </div>
+            <div class="w-50">
+                <div class="form-group">
+                    <label for="customerName">Meeting Agenda<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Meeting agenda"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Meeting Discussion<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Meeting discussion"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Meeting Decision<span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Meeting decision"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-2 card pe-5 py-5 d-flex flex-row">
+            <div class="w-50 mx-5">
+                <div class="form-group">
+                    <label for="productService">Interested Product/Service</label>
+                    <select class="form-control" id="productService" name="ProductServiceId"></select>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="Quantity">
+                </div>
+                <div class="form-group">
+                    <label for="unit">Unit</label>
+                    <input type="text" class="form-control" id="unit" readonly>
+                </div>
+                <button type="button" id="addProduct" class="my-3 btn btn-outline-success">+ Add</button>
+            </div>
+        </div>
+
+        <div class="my-2 card" style="min-height: 100px">
+            <table class="table" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>SL#</th>
+                        <th>Interested Product/Service Name</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- dynamically added rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <button type="submit" class="my-3 btn btn-success">Save</button>
+    </form>
+</div>
