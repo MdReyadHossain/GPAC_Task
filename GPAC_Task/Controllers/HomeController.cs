@@ -47,6 +47,13 @@ namespace GPAC_Task.Controllers
             return Json(products);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetProductUnit(int productId)
+        {
+            var product = await _context.ProductServices.Where(product => product.Id == productId).FirstOrDefaultAsync();
+            return Json(product);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaveMeetingMinutes(MeetingMinutesMaster meeting)
         {

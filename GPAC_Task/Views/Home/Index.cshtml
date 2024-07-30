@@ -6,9 +6,9 @@
     <h2>Meeting Minutes</h2>
 
     <form id="meetingMinutesForm">
-        <div class="form-group card d-flex flex-row px-2 py-3">
+        <div class="form-group card d-flex flex-row px-5 py-3">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="customerType" id="corporate" value="Corporate" checked>
+                <input class="form-check-input" type="radio" name="customerType" id="corporate" value="Corporate">
                 <label class="form-check-label" for="corporate">Corporate</label>
             </div>
             <div class="form-check form-check-inline">
@@ -103,3 +103,36 @@
         <button type="submit" class="my-3 btn btn-success">Save</button>
     </form>
 </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            $('input[name="customerType"]').change(() => {
+                loadCustomers($("input[name='customerType']:checked").val());
+            });
+
+            $('select[name="ProductServiceId"]').click(() => {
+                loadProducts();
+            });
+
+            function loadProducts() {
+                $.getJSON('/Home/GetProducts', (data) => {
+                    $('#productService').empty();
+                    $.each(data, function (i, product) {
+                        $('#productService').append($('<option>', { value: product.id, text: product.name }));
+                    });
+                });
+            }
+
+            function loadCustomers(customerType) {
+                $.getJSON('/Home/GetCustomers', { customerType: customerType }, (data) => {
+                    $('#customerName').empty();
+                    $.each(data, function (i, customer) {
+                        $('#customerName').append($('<option>', { value: customer.id, text: customer.name }));
+                    });
+                });
+            }
+        })
+    </script>
+}
