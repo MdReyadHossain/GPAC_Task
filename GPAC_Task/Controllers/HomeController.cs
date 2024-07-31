@@ -55,17 +55,27 @@ namespace GPAC_Task.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveMeetingMinutes(MeetingMinutesMaster meeting)
+        public async Task<IActionResult> SaveMeetingMinutes([FromBody] MeetingPayload meeting)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (meeting.meetingMinutesMaster != null)
                 {
-                    _context.MeetingMinutesMasters.Add(meeting);
+                    _context.MeetingMinutesMasters.Add(meeting.meetingMinutesMaster);
                     await _context.SaveChangesAsync();
+
+                    if (meeting.meetingMinutesDetail != null)
+                    {
+                        foreach (var detail in meeting.meetingMinutesDetail)
+                        {
+                            detail.MeetingMinutesMasterId = meeting.meetingMinutesMaster.Id;
+                            _context.MeetingMinutesDetails.Add(detail);
+                        }
+                        await _context.SaveChangesAsync();
+                    }
                     return Json(new { success = true, message = "Meeting Details Successfully Created!" });
                 }
-                return Json(new { success = false, message = "Failed to Save Meeting Details!" });
+                return Json(new { success = false, message = "Meeting Details failed to Create!" });
             }
             catch (Exception ex)
             {

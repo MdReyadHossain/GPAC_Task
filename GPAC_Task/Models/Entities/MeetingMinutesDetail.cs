@@ -10,8 +10,8 @@ namespace GPAC_Task.Models.Entities
 
         [ForeignKey("MeetingMinutesMaster")]
         public int MeetingMinutesMasterId { get; set; }
-        public virtual required MeetingMinutesMaster MeetingMinutesMaster { get; set; }
-
+        public virtual MeetingMinutesMaster? MeetingMinutesMaster { get; set; }
+            
         [ForeignKey("ProductService")]
         public int ProductServiceId { get; set; }
         public virtual required ProductService ProductService { get; set; }

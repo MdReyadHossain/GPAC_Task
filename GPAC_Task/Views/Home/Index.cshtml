@@ -1,4 +1,5 @@
-﻿@{
+﻿@model GPAC_Task.Models.Entities.MeetingMinutesMaster
+@{
     ViewData["Title"] = "Answer";
 }
 
@@ -8,13 +9,14 @@
     <form id="meetingMinutesForm">
         <div class="form-group card d-flex flex-row px-5 py-3">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="customerType" id="corporate" value="Corporate">
+                <input class="form-check-input" type="radio" name="CustomerType" asp-for="CustomerType" id="corporate" value="Corporate">
                 <label class="form-check-label" for="corporate">Corporate</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="customerType" id="individual" value="Individual">
+                <input class="form-check-input" type="radio" name="CustomerType" id="individual" asp-for="CustomerType" value="Individual">
                 <label class="form-check-label" for="individual">Individual</label>
             </div>
+            <span class="text-danger">@Html.ValidationMessageFor(model => model.CustomerType)</span>
         </div>
 
         <div class="mb-2 card pe-5 py-5 d-flex flex-row">
@@ -30,6 +32,8 @@
                         <label for="meetingDate">Date</label>
                         <input type="date" class="form-control" id="meetingDate" name="MeetingDate">
                     </div>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.MeetingDate)</span>
+
                     <div class="form-group">
                         <label for="meetingTime">Time</label>
                         <input type="time" class="form-control" id="meetingTime" name="MeetingTime">
@@ -37,29 +41,41 @@
                 </div>
                 <div class="form-group">
                     <label for="customerName">Meeting Place<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="customerName" name="CustomerId" placeholder="meeting place">
+                    <input type="text" class="form-control" id="MeetingPlace" name="Place" placeholder="meeting place">
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Place)</span>
+
                 </div>
                 <div class="form-group">
                     <label for="customerName">Attends From Client Side<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Present client side"></textarea>
+                    <textarea class="form-control" id="ClientSide" name="ClientSide" placeholder="Present client side"></textarea>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.ClientSide)</span>
+
                 </div>
                 <div class="form-group">
                     <label for="customerName">Attends From Host Side<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Present self side"></textarea>
+                    <textarea class="form-control" id="HostSide" name="HostSide" placeholder="Present self side"></textarea>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.HostSide)</span>
+
                 </div>
             </div>
             <div class="w-50">
                 <div class="form-group">
                     <label for="customerName">Meeting Agenda<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Meeting agenda"></textarea>
+                    <textarea class="form-control" id="MeetingAgenda" name="Agenda" placeholder="Meeting agenda"></textarea>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Agenda)</span>
+
                 </div>
                 <div class="form-group">
                     <label for="customerName">Meeting Discussion<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Meeting discussion"></textarea>
+                    <textarea class="form-control" id="MeetingDiscussion" name="Discussion" placeholder="Meeting discussion"></textarea>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Discussion)</span>
+
                 </div>
                 <div class="form-group">
                     <label for="customerName">Meeting Decision<span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="customerName" name="CustomerId" placeholder="Meeting decision"></textarea>
+                    <textarea class="form-control" id="MeetingDecision" name="Decision" placeholder="Meeting decision"></textarea>
+                    <span class="text-danger">@Html.ValidationMessageFor(model => model.Decision)</span>
+
                 </div>
             </div>
         </div>
@@ -68,7 +84,9 @@
             <div class="w-50 mx-5">
                 <div class="form-group">
                     <label for="productService">Interested Product/Service</label>
-                    <select class="form-control" id="productService" name="ProductServiceId"></select>
+                    <select class="form-control" id="productService" name="ProductServiceId">
+                        <option disabled selected>Select Interested Product/Service</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
@@ -78,7 +96,7 @@
                     <label for="unit">Unit</label>
                     <input type="text" class="form-control" id="unit" readonly>
                 </div>
-                <button type="button" id="addProduct" class="my-3 btn btn-outline-success">+ Add</button>
+                <a id="addProduct" class="my-3 btn btn-outline-success">+ Add</a>
             </div>
         </div>
 
@@ -99,8 +117,10 @@
                 </tbody>
             </table>
         </div>
-
-        <button type="submit" class="my-3 btn btn-success">Save</button>
+        <div class="d-flex flex-row gap-2">
+            <button type="submit" class="my-3 btn btn-primary">Save</button>
+            <a class="my-3 btn btn-warning" asp-action="Index" asp-asp-controller="Home">Reload</a>
+        </div>
     </form>
 </div>
 
@@ -108,18 +128,37 @@
 @section Scripts {
     <script>
         $(document).ready(() => {
-            $('input[name="customerType"]').change(() => {
-                loadCustomers($("input[name='customerType']:checked").val());
+            loadProducts();
+
+            $('input[name="CustomerType"]').change(() => {
+                loadCustomers($("input[name='CustomerType']:checked").val());
             });
 
-            $('select[name="ProductServiceId"]').click(() => {
-                loadProducts();
+            $('select[name="ProductServiceId"]').change(() => {
+                loadProductUnit(document.getElementById("productService").value);
             });
+
+            $('#addProduct').click(() => {
+                addProductToTable();
+            });
+
+            $('#meetingMinutesForm').submit(function (event) {
+                event.preventDefault();
+                saveMeetingMinutes();
+            });
+
+            function loadProductUnit(productId) {
+                $.getJSON('/Home/GetProductUnit', { productId: productId }, (data) => {
+                    console.log(productId, data);
+                    document.getElementById("unit").value = data.unit;
+                });
+            }
 
             function loadProducts() {
                 $.getJSON('/Home/GetProducts', (data) => {
                     $('#productService').empty();
-                    $.each(data, function (i, product) {
+                    document.getElementById("unit").value = data[0].unit
+                    $.each(data, (i, product) => {
                         $('#productService').append($('<option>', { value: product.id, text: product.name }));
                     });
                 });
@@ -128,9 +167,79 @@
             function loadCustomers(customerType) {
                 $.getJSON('/Home/GetCustomers', { customerType: customerType }, (data) => {
                     $('#customerName').empty();
-                    $.each(data, function (i, customer) {
+                    $.each(data, (i, customer) => {
                         $('#customerName').append($('<option>', { value: customer.id, text: customer.name }));
                     });
+                });
+            }
+
+            function addProductToTable() {
+                var productServiceId = $('#productService').val();
+                var productName = $('#productService option:selected').text();
+                var quantity = $('#quantity').val();
+                var unit = $('#unit').val();
+
+                var row = '<tr>' +
+                    '<td></td>' +
+                    '<td hidden>' + productServiceId + '</td>' +
+                    '<td>' + productName + '</td>' +
+                    '<td>' + quantity + '</td>' +
+                    '<td>' + unit + '</td>' +
+                    '<td><button type="button" class="btn btn-sm btn-warning edit-product">Edit</button></td>' +
+                    '<td><button type="button" class="btn btn-sm btn-danger delete-product">Delete</button></td>' +
+                    '</tr>';
+
+                $('#productsTable tbody').append(row);
+                updateRowNumbers();
+            }
+
+            function updateRowNumbers() {
+                $('#productsTable tbody tr').each(function (index, row) {
+                    $(row).find('td:first').text(index + 1);
+                });
+            }
+
+            function saveMeetingMinutes() {
+                const formDataArray = $('#meetingMinutesForm').serializeArray();
+                const formData = {}
+                $.each(formDataArray, (index, field) => {
+                    formData[field.name] = field.value;
+                });
+                var meetingDate = formData.MeetingDate;
+                var meetingTime = formData.MeetingTime;
+                var meetingDateTime = new Date(meetingDate + 'T' + meetingTime);
+                formData.MeetingDate = meetingDateTime.toISOString();
+                if (formData.CustomerType == 'Corporate') {
+                    formData.CorporateCustomerId = formData.CustomerId;
+                } else {
+                    formData.IndividualCustomerId = formData.CustomerId;
+                }
+                delete formData.MeetingTime;
+
+                let products = [];
+
+                $('#productsTable tbody tr').each(function () {
+                    let product = {
+                        ProductServiceId: $(this).find('td:eq(1)').text(),
+                        Quantity: $(this).find('td:eq(3)').text(),
+                        Unit: $(this).find('td:eq(4)').text()
+                    };
+                    products.push(product);
+                });
+                console.log({ meetingMinutesMaster: formData, meetingMinutesDetail: products })
+
+                $.ajax({
+                    url: '/Home/SaveMeetingMinutes',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ meetingMinutesMaster: formData, meetingMinutesDetail: products }),
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Meeting minutes saved successfully.');
+                        } else {
+                            alert('Error: ' + response.errors.join(', '));
+                        }
+                    }
                 });
             }
         })
